@@ -1,3 +1,7 @@
+# Asteroids VR — Copyright (C) 2026 Ariel Konopka
+# Licensed under the GNU GPL version 3 with an additional permission
+# (GPLv3 section 7); see LICENSE and LICENSE-EXCEPTION.
+
 class_name Sound
 extends Node3D
 ## Dźwięk gry. Węzeł stoi w (0,0,0) sceny w układzie świata (jak skały),

@@ -1,3 +1,7 @@
+# Asteroids VR — Copyright (C) 2026 Ariel Konopka
+# Licensed under the GNU GPL version 3 with an additional permission
+# (GPLv3 section 7); see LICENSE and LICENSE-EXCEPTION.
+
 class_name PowerUps
 extends Node3D
 ## Power-upy: kryształy wypadające ze skał (czasem) i z UFO (zawsze).

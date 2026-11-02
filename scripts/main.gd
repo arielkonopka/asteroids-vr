@@ -1,3 +1,7 @@
+# Asteroids VR — Copyright (C) 2026 Ariel Konopka
+# Licensed under the GNU GPL version 3 with an additional permission
+# (GPLv3 section 7); see LICENSE and LICENSE-EXCEPTION.
+
 extends Node3D
 ## Asteroids VR — kokpit w 3-torusie.
 ##

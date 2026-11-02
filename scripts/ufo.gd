@@ -1,3 +1,7 @@
+# Asteroids VR — Copyright (C) 2026 Ariel Konopka
+# Licensed under the GNU GPL version 3 with an additional permission
+# (GPLv3 section 7); see LICENSE and LICENSE-EXCEPTION.
+
 class_name Ufos
 extends Node3D
 ## Latający talerz: pojawia się co jakiś czas, krąży wokół gracza i strzela.

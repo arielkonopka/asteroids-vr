@@ -137,5 +137,11 @@ plugin 5.1.0) keeps its own licenses:
 
 - the plugin itself — MIT ([LICENSE](addons/godotopenxrvendors/LICENSE)),
 - vendor OpenXR loaders — Apache-2.0 (`*/LICENSE`, `meta/LICENSE-LOADER`),
-- Meta-specific components — Oculus SDK License Agreement
+- Meta-specific components (the Meta OpenXR preview headers compiled into
+  the plugin) — Oculus SDK License Agreement
   ([meta/LICENSE-SDK](addons/godotopenxrvendors/meta/LICENSE-SDK)).
+
+The additional permission exists because of those Meta components: the
+Oculus SDK License forbids making the SDK subject to an open source license
+(section 1.2.8), so the GPL must not extend to it. With the permission, the
+game's own code stays GPL while the plugin keeps its original terms.
