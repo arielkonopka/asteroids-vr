@@ -1,116 +1,138 @@
 # Asteroids VR (Godot 4.6, Meta Quest 3)
 
-Asteroids w kokpicie, w przestrzeni z periodycznymi brzegami (3-torus).
-Kod (wszystko budowane z kodu, scena `main.tscn` ma tylko korzeń):
+Asteroids from the cockpit, in a space with periodic boundaries (a 3-torus):
+fly out of one side of the cube and you come back in on the opposite side.
 
-| plik | co |
+Everything is built from code — `main.tscn` contains only the root node.
+
+| file | what |
 |---|---|
-| `scripts/main.gd` | środowisko, gwiazdy, stan gry: wynik, życia, fale, pauza, game over |
-| `scripts/torus.gd` | `Torus` — rozmiar świata, mgła, `wrap_pos` / `wrap_delta` |
-| `scripts/ship.gd` | `Ship` — rig XR, kokpit, sterowanie, lot, działka, haptyka |
-| `scripts/dashboard.gd` | `Dashboard` — zegary w kokpicie + komunikat PAUZA / GAME OVER |
-| `scripts/sound.gd` | `Sound` — dźwięk 3D: działka, wybuchy w miejscu świata, dudnienie 4 najbliższych skał, silnik, alarmy |
-| `scripts/sfx_synth.gd` | `SfxSynth` — synteza wszystkich efektów do `AudioStreamWAV` przy starcie (brak plików audio) |
-| `scripts/ufo.gd` | `Ufos` — latający spodek: lot wokół gracza, strzały z wyprzedzeniem, dźwięk 3D |
-| `scripts/powerups.gd` | `PowerUps` — kryształy: tarcza, potrójny strzał, życie, bomba |
-| `scripts/title_screen.gd` | `TitleScreen` — ekran startowy z rekordem i instrukcją |
-| `scripts/gauge.gd` | `Gauge` — analogowy zegar: tarcza (pieczona raz do tekstury z mipmapami), wskazówka 3D, licznik cyfrowy, kontrolka |
-| `scripts/rock_field.gd` | `RockField` — skały: siatki, fale, ruch, pękanie, testy kolizji |
-| `scripts/bullets.gd` | `Bullets` — pociski i trafienia |
+| `scripts/main.gd` | environment, stars, game state: title → playing → game over, score, lives, waves, pause, power-up effects, high score |
+| `scripts/torus.gd` | `Torus` — world size, fog, `wrap_pos` / `wrap_delta` |
+| `scripts/ship.gd` | `Ship` — XR rig, cockpit, controls, flight, guns, haptics, shield bubble, nearest-rock locator |
+| `scripts/dashboard.gd` | `Dashboard` — cockpit gauges, PAUSED / GAME OVER message, power-up status line |
+| `scripts/gauge.gd` | `Gauge` — analog gauge: dial (baked once into a mipmapped texture), 3D needle, digital readout, warning lamp |
+| `scripts/rock_field.gd` | `RockField` — asteroids: meshes, waves, motion, splitting, collision tests |
+| `scripts/bullets.gd` | `Bullets` — player shots and hits |
+| `scripts/ufo.gd` | `Ufos` — flying saucer: orbits the player, leads its shots, 3D sound |
+| `scripts/powerups.gd` | `PowerUps` — crystals: shield, triple shot, extra life, bomb |
+| `scripts/title_screen.gd` | `TitleScreen` — title board with high score and instructions |
+| `scripts/sound.gd` | `Sound` — 3D audio: guns, explosions anchored in the world, rumble of the 4 nearest rocks, engine, alarms |
+| `scripts/sfx_synth.gd` | `SfxSynth` — synthesizes every sound effect into `AudioStreamWAV` at startup (no audio files) |
 
-## Sterowanie
+## Controls
 
-| Quest | Desktop | Akcja |
+| Quest | Desktop | Action |
 |---|---|---|
-| prawy drążek ↕ | ↑ ↓ | pochylenie (lotniczo, `INVERT_PITCH`) |
-| prawy drążek ↔ | ← → | odchylenie (yaw) |
-| lewy drążek ↔ | Q / E | przechył (roll) |
-| lewy spust | W | ciąg |
-| lewy grip | S | hamowanie |
-| prawy spust | spacja | ogień (dwa działka na zmianę, zbieżne na celowniku) |
-| lewy przycisk menu (≡) | P | pauza (też automatycznie przy menu Meta / zdjęciu gogli) |
-| — | Esc | wyjście |
+| right stick ↕ | ↑ ↓ | pitch (aircraft style, see `INVERT_PITCH`) |
+| right stick ↔ | ← → | yaw |
+| left stick ↔ | Q / E | roll |
+| left trigger | W | thrust |
+| left grip | S | brake |
+| right trigger | Space | fire (two guns alternating, converging on the crosshair) |
+| left menu button (≡) | P | pause (also automatic when the Meta menu opens or the headset is removed) |
+| right trigger (title screen) | Space / Enter | start |
+| — | Esc | quit |
 
-Zegary na desce: **życia** (lewy, kontrolka = ostatnie życie / miga po
-zderzeniu), **prędkość** + licznik **wyniku** (środek), **skały do zniszczenia
-w fali** w % + numer **fali** (prawy).
+Recenter the view by holding the Meta button on the right controller.
 
-## Rozgrywka
+Dashboard gauges: **lives** (left; the lamp lights on the last life and
+blinks after a hit), **speed** with the **score** counter (center),
+**rocks left in the wave** in % with the **wave** number (right).
 
-- **Ekran startowy**: rekord (zapisany w `user://asteroids.cfg`), ostatni
-  wynik, skrót sterowania. Start: prawy spust (desktop: spacja / Enter).
-- **UFO** co 18–30 s: duży (200 pkt, niecelny) lub od 3. fali mały
-  (1000 pkt, celny). Krąży wokół gracza i strzela z wyprzedzeniem;
-  słychać go przestrzennie. Zawsze zostawia power-up.
-- **Power-upy** (8% szansy ze skały, zawsze z UFO; zbiera się przelatując):
-  **S** tarcza (shield) 10 s (taranuje skały, chroni przed UFO), **3** potrójny
-  strzał 12 s, **+** życie (max 5), **B** bomba (wszystko w promieniu 70 m).
+## Gameplay
 
-Recentrowanie widoku: przytrzymaj przycisk Meta na prawym kontrolerze.
+- **Title screen**: high score (saved in `user://asteroids.cfg`), last
+  score and a controls summary. Rocks drift in the background.
+- **UFO** every 18–30 s: a large one (200 pts, inaccurate) or, from wave 3,
+  a small one (1000 pts, accurate). It orbits the player and fires with
+  lead; you can hear where it is. It always drops a power-up.
+- **Power-ups** (8% chance from a rock, always from a UFO; fly through to
+  collect): **S** shield for 10 s (ram rocks, immune to UFO fire),
+  **3** triple shot for 12 s, **+** extra life (max 5), **B** bomb
+  (destroys everything within 70 m).
+- **Locator**: when 3 or fewer rocks remain, or none is visible through
+  the fog, an arrow next to the crosshair points to the nearest one
+  (red = behind you).
 
-## Uruchomienie na Linuksie (desktop)
+## Running on desktop (Linux)
 
 ```
-godot --path .          # bez gogli startuje w trybie klawiaturowym
+godot --path .          # without a headset it starts in keyboard mode
 ```
 
-## Build na Questa
+## Building for Quest
 
 ```
 tools/build.sh          # debug APK -> build/asteroids-vr.apk
-tools/build.sh run      # + adb install i start na goglach
+tools/build.sh run      # + adb install and launch on the headset
 tools/build.sh log      # adb logcat -s godot
 ```
 
-Preset eksportu „Quest” (`export_presets.cfg`): Gradle, arm64, OpenXR,
-plugin Meta, Quest 2/3/Pro. Katalogi `android/`, `build/`, `.godot/`
-są generowane (w `.gitignore`).
+The script uses the Android SDK from `$ANDROID_HOME` (default `~/opt/android-sdk`).
 
-### Środowisko (stan na 2026-11)
+The "Quest" export preset (`export_presets.cfg`): Gradle build, arm64,
+OpenXR, Meta plugin, Quest 2/3/Pro. The `android/`, `build/` and `.godot/`
+directories are generated (and git-ignored).
 
-| Co | Skąd | Gdzie |
-|---|---|---|
-| Godot 4.6.3 | `apt install godot` | `/usr/bin/godot` |
-| szablony eksportu 4.6.3 | github.com/godotengine/godot, `.tpz` | `~/.local/share/godot/export_templates/4.6.3.stable/` |
-| JDK 17 (Temurin) | adoptium.net | `~/opt/jdk17` |
-| Android SDK: platform 36, build-tools 36.1.0, NDK 29.0.14206865, platform-tools | `sdkmanager` | `~/opt/android-sdk` |
-| debug keystore | `keytool` | `~/.local/share/godot/keystores/debug.keystore` |
-| Godot OpenXR Vendors 5.1.0 | GitHub GodotVR | `addons/godotopenxrvendors/` |
+### Toolchain
 
-Ścieżki JDK/SDK są w ustawieniach edytora (`~/.config/godot/editor_settings-4.6.tres`).
-Wersje SDK/NDK wynikają z `config.gradle` w `android_source.zip` — przy
-zmianie wersji Godota sprawdź je ponownie. Szablony muszą mieć dokładnie
-tę samą wersję co edytor; plugin vendors 5.x wymaga Godota ≥ 4.6.
+| What | Where from |
+|---|---|
+| Godot 4.6.3 | e.g. Debian `apt install godot`, or godotengine.org |
+| Export templates 4.6.3 | the `.tpz` from the Godot release, unpacked to `~/.local/share/godot/export_templates/4.6.3.stable/` |
+| JDK 17 | e.g. Temurin from adoptium.net |
+| Android SDK: platform 36, build-tools 36.1.0, NDK 29.0.14206865, platform-tools | `sdkmanager` from the Android command-line tools |
+| Debug keystore | `keytool` (Godot can also generate one) |
+| Godot OpenXR Vendors 5.1.0 | bundled in `addons/godotopenxrvendors/` |
 
-### Gogle
+Point Godot to the JDK and SDK in Editor Settings → Export → Android.
+The required SDK/NDK versions come from `config.gradle` inside
+`android_source.zip` — check them again when you change the Godot version.
+The export templates must match the editor version exactly; vendors
+plugin 5.x requires Godot ≥ 4.6.
 
-1. **Tryb deweloperski**: aplikacja Meta Horizon na telefonie → Urządzenia →
-   Ustawienia słuchawek → Tryb dewelopera (wymaga „organizacji” na
+### Headset
+
+1. **Developer mode**: Meta Horizon app on your phone → Devices →
+   Headset settings → Developer mode (requires an "organization" on
    developers.meta.com).
-2. Reguły udev dla USB: paczka `android-udev-rules` (już zainstalowana, obejmuje Meta 2833)
-   + członkostwo w grupie `plugdev`.
-3. Podłącz Questa kablem, zaakceptuj debugowanie USB w goglach,
-   `~/opt/android-sdk/platform-tools/adb devices` powinno go pokazać.
-4. W edytorze działa też Remote Deploy (ikona Androida w prawym górnym rogu).
-   Gra trafia do Biblioteki → „Nieznane źródła”.
+2. **USB access on Linux**: udev rules, e.g. Debian's `android-udev-rules`
+   package (covers Meta's vendor ID 2833), and membership in the `plugdev` group.
+3. Connect the Quest with a cable, allow USB debugging in the headset;
+   `adb devices` should list it.
+4. Remote Deploy in the editor works too (Android icon, top right).
+   The game shows up in Library → "Unknown Sources".
 
-## Jak to działa
+## How it works
 
-- **3-torus**: logiczne pozycje leżą w `[0, L)^3`. Statek stoi fizycznie
-  w (0,0,0) sceny, a każdy obiekt jest rysowany w minimalnym obrazie
-  `wrap_delta(pos - ship_pos)`. Mgła (`FOG_END` < L/2) maskuje przeskoki.
-  Gwiazdy są „w nieskończoności”, więc nie mają paralaksy translacji.
-- **Komfort**: stała rama kokpitu w polu widzenia, wygładzona prędkość
-  kątowa (`ROT_SMOOTH`) i limity obrotu. Jeśli mdli, najpierw zmniejsz
-  `MAX_ROLL`.
-- **Pękanie**: dwa odłamki dostają ±kick prostopadle do kierunku trafienia,
-  więc pęd jest zachowany.
-- **Kolizje pocisków**: test odcinek–kula, bo przy 220 m/s pocisk przelatuje
-  ~3 m na klatkę.
+- **3-torus**: logical positions live in `[0, L)^3`. The ship physically
+  stays at the scene origin, and every object is drawn at its minimum
+  image `wrap_delta(pos - ship_pos)`. Fog (`FOG_END` < L/2) hides the
+  moment an image jumps to the other side. Stars and the sun are "at
+  infinity", so they have no translational parallax.
+- **Comfort**: a fixed cockpit frame in view, smoothed angular velocity
+  (`ROT_SMOOTH`) and rotation limits. If you feel sick, lower `MAX_ROLL` first.
+- **Splitting**: the two fragments get ±kick perpendicular to the hit
+  direction, so momentum is conserved.
+- **Bullet collisions**: segment–sphere tests, because at 220 m/s a bullet
+  travels ~3 m per frame.
 
-## Pomysły na dalej
+## Ideas
 
-- Winieta przy obrotach (opcja komfortu).
-- Gałka/drążek fizyczny w kokpicie zamiast thumbsticków.
-- Ghost-render kopii sześcianu, żeby *zobaczyć* torus. Wymaga mgły > L/2.
-- Przeniesienie pętli kolizji do C++ (GDExtension), jeśli skał będzie setki.
+- Vignette during rotation (comfort option).
+- A physical stick/throttle in the cockpit instead of thumbsticks.
+- Ghost-rendering copies of the cube to actually *see* the torus (needs fog > L/2).
+- Moving the collision loop to C++ (GDExtension) if there are hundreds of rocks.
+
+## License
+
+The game is licensed under GPLv3 — see [LICENSE](LICENSE).
+
+Third-party code in `addons/godotopenxrvendors/` (Godot OpenXR Vendors
+plugin 5.1.0) keeps its own licenses:
+
+- the plugin itself — MIT ([LICENSE](addons/godotopenxrvendors/LICENSE)),
+- vendor OpenXR loaders — Apache-2.0 (`*/LICENSE`, `meta/LICENSE-LOADER`),
+- Meta-specific components — Oculus SDK License Agreement
+  ([meta/LICENSE-SDK](addons/godotopenxrvendors/meta/LICENSE-SDK)).
