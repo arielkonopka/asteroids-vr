@@ -44,15 +44,15 @@ func _ready() -> void:
 		add_child(b)
 
 	_label("ASTEROIDS VR", 0.30, 120, Color(1.0, 0.6, 0.15), 24)
-	_label("kokpit w trójwymiarowym torusie", 0.205, 40, Color(0.7, 0.72, 0.8))
+	_label("a cockpit inside a three-dimensional torus", 0.205, 40, Color(0.7, 0.72, 0.8))
 	_scores = _label("", 0.11, 52, Color(1.0, 0.8, 0.45))
 	_label(
-		"PRAWY drążek — nos (góra/dół, lewo/prawo)\n" +
-		"LEWY drążek — przechył     LEWY spust — ciąg     LEWY grip — hamulec\n" +
-		"PRAWY spust — ogień     ≡ — pauza\n\n" +
-		"Power-upy (przeleć przez kryształ):\n" +
-		"T tarcza    3 potrójny strzał    + życie    B bomba\n" +
-		"UFO strzela — słuchaj, skąd nadlatuje.",
+		"RIGHT stick — pitch & yaw\n" +
+		"LEFT stick — roll     LEFT trigger — thrust     LEFT grip — brake\n" +
+		"RIGHT trigger — fire     ≡ — pause\n\n" +
+		"Power-ups (fly through the crystal):\n" +
+		"S shield    3 triple shot    + extra life    B bomb\n" +
+		"UFOs shoot back — listen for where they come from.",
 		-0.1, 36, Color(0.82, 0.84, 0.9))
 	_prompt = _label("", -0.36, 48, Color(0.4, 1.0, 0.5))
 
@@ -72,11 +72,11 @@ func _label(text: String, y: float, size: int, color: Color, outline := 0) -> La
 
 
 func open(high: int, last: int, xr: bool) -> void:
-	var txt := "REKORD  %06d" % high
+	var txt := "HIGH SCORE  %06d" % high
 	if last >= 0:
-		txt += "        OSTATNI WYNIK  %06d" % last
+		txt += "        LAST SCORE  %06d" % last
 	_scores.text = txt
-	_prompt.text = "Pociągnij PRAWY SPUST, aby wystartować" if xr else "SPACJA — start"
+	_prompt.text = "Pull the RIGHT TRIGGER to start" if xr else "SPACE — start"
 	_t = 0.0
 	visible = true
 

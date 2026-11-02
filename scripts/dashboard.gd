@@ -24,7 +24,7 @@ func setup(max_speed: float, max_lives: int) -> void:
 	speed.red_from = max_speed * 0.875
 	speed.red_to = max_speed
 	speed.readout_digits = 6
-	speed.readout_caption = "WYNIK"
+	speed.readout_caption = "SCORE"
 	speed.smoothing = 8.0
 	_mount(speed, Vector3(0.0, -0.305, -0.6))
 
@@ -33,7 +33,7 @@ func setup(max_speed: float, max_lives: int) -> void:
 	lives.max_value = max_lives
 	lives.major_step = 1.0
 	lives.minor_per_major = 1
-	lives.title = "ŻYCIA"
+	lives.title = "LIVES"
 	lives.red_from = 0.0
 	lives.red_to = 1.0
 	lives.has_lamp = true
@@ -46,9 +46,9 @@ func setup(max_speed: float, max_lives: int) -> void:
 	rocks.major_step = 0.25
 	rocks.minor_per_major = 1
 	rocks.label_scale = 100.0
-	rocks.title = "SKAŁY %"
+	rocks.title = "ROCKS %"
 	rocks.readout_digits = 2
-	rocks.readout_caption = "FALA"
+	rocks.readout_caption = "WAVE"
 	rocks.smoothing = 3.0
 	_mount(rocks, Vector3(0.19, -0.325, -0.58))
 

@@ -8,7 +8,7 @@ signal picked(type: int)
 enum { SHIELD, TRIPLE, LIFE, BOMB }
 
 const INFO := {
-	SHIELD: {"letter": "T", "color": Color(0.3, 0.6, 1.0), "weight": 30},
+	SHIELD: {"letter": "S", "color": Color(0.3, 0.6, 1.0), "weight": 30},
 	TRIPLE: {"letter": "3", "color": Color(1.0, 0.6, 0.15), "weight": 30},
 	LIFE:   {"letter": "+", "color": Color(0.3, 1.0, 0.4), "weight": 15},
 	BOMB:   {"letter": "B", "color": Color(1.0, 0.25, 0.2), "weight": 25},

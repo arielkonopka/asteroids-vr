@@ -43,7 +43,7 @@ w fali** w % + numer **fali** (prawy).
   (1000 pkt, celny). Krąży wokół gracza i strzela z wyprzedzeniem;
   słychać go przestrzennie. Zawsze zostawia power-up.
 - **Power-upy** (8% szansy ze skały, zawsze z UFO; zbiera się przelatując):
-  **T** tarcza 10 s (taranuje skały, chroni przed UFO), **3** potrójny
+  **S** tarcza (shield) 10 s (taranuje skały, chroni przed UFO), **3** potrójny
   strzał 12 s, **+** życie (max 5), **B** bomba (wszystko w promieniu 70 m).
 
 Recentrowanie widoku: przytrzymaj przycisk Meta na prawym kontrolerze.

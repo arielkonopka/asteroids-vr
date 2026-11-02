@@ -370,7 +370,7 @@ func _process(delta: float) -> void:
 	ufos.set_paused(frozen)
 	if frozen:
 		if mode == Mode.PLAYING:
-			dash.show_message("PAUZA — %s wznawia" % ("menu (lewy)" if xr_active else "P"))
+			dash.show_message("PAUSED — %s to resume" % ("left menu button" if xr_active else "P"))
 		return
 
 	match mode:
@@ -472,7 +472,7 @@ func _update_hud() -> void:
 
 	var st: PackedStringArray = []
 	if shield_t > 0.0:
-		st.append("TARCZA %d s" % ceili(shield_t))
+		st.append("SHIELD %d s" % ceili(shield_t))
 	if triple_t > 0.0:
-		st.append("POTRÓJNY STRZAŁ %d s" % ceili(triple_t))
+		st.append("TRIPLE SHOT %d s" % ceili(triple_t))
 	dash.show_status("     ".join(st))
