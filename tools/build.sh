@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Asteroids VR — Copyright (C) 2026 Ariel Konopka
-# Licensed under the GNU GPL version 3 with an additional permission
+# Licensed under the GNU GPL version 3 or later, with an additional permission
 # (GPLv3 section 7); see LICENSE and LICENSE-EXCEPTION.
 # Buduje APK na Questa i (opcjonalnie) instaluje/uruchamia przez adb.
 #   tools/build.sh            debug APK -> build/asteroids-vr.apk

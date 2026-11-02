@@ -127,7 +127,7 @@ plugin 5.x requires Godot ≥ 4.6.
 
 ## License
 
-The game is licensed under GPLv3 — see [LICENSE](LICENSE) — with an
+The game is licensed under GPLv3 or later — see [LICENSE](LICENSE) — with an
 additional permission (GPLv3 section 7) to combine and distribute it with
 the Godot OpenXR Vendors plugin and the Meta OpenXR SDK — see
 [LICENSE-EXCEPTION](LICENSE-EXCEPTION).
